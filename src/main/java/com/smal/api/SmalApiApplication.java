@@ -16,8 +16,7 @@ import java.util.logging.Level;
 
 @SpringBootApplication
 public class SmalApiApplication implements CommandLineRunner {
-    @Autowired
-    ResourceLoader resourceLoader ;
+
     public static void main(String[] args) {
         SpringApplication.run(SmalApiApplication.class, args);
     }
