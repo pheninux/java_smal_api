@@ -15,7 +15,8 @@
     </thead>
     <tbody>
     <tr th:each="event : ${events}">
-        <td th:text="${event.getId()}"></td>
+        <td th:text="${event.getDate()}"></td>
+        <td th:text="${event.getContext()}"></td>
     </tr>
     </tbody>
 </table>

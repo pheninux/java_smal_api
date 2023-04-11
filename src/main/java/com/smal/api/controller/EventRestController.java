@@ -1,13 +1,19 @@
 package com.smal.api.controller;
 
 import com.smal.api.model.Event;
-import com.smal.api.service.EventRepository;
+import com.smal.api.model.dto.EventDto;
+import com.smal.api.model.records.EventRecord;
+import com.smal.api.repository.EventRepository;
+import com.smal.api.service.EventService;
+import com.smal.api.service.mapper.EventMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -15,14 +21,26 @@ import java.util.List;
 @RequestMapping
 public class EventRestController {
 
-    @Autowired
-    EventRepository eventRepository;
+    private final static Logger LOGGER = LoggerFactory.getLogger(EventRestController.class.getName());
 
-    @RequestMapping(value = "/events", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<Event> getAllEvent() {
-        return eventRepository.findAll();
+    @Autowired
+    EventService eventService;
+
+
+    @RequestMapping(value = "/v1/events", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EventDto>> getAllEventDto() {
+        return new ResponseEntity<>(eventService.getAllEventDto(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/v2/events", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<EventRecord>> getAllEventRecord() {
+        return new ResponseEntity<>(eventService.getAllEventRecord(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/v1/event/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EventDto> create(@Validated @RequestBody EventDto event) {
+        LOGGER.info("event => {}", event);
+        return new ResponseEntity<>(eventService.create(event),HttpStatus.OK);
+    }
 
 }
